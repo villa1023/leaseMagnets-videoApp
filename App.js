@@ -4,10 +4,15 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <div>
+      <View style={styles.container}>
+        <Text>Welcome to someones Native Project</Text>
+        <StatusBar style="auto" />
+      </View>
+        <View style={styles.newContainer}>
+          <button>Click here to Record</button>
+      </View>
+    </div>
   );
 }
 
@@ -18,4 +23,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  newContainer: {
+    flex: 1,
+    alignItems: 'center',
+   justifyContent: 'center',
+  }
+
 });
