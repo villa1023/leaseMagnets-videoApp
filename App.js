@@ -1,4 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
+import { Ionicons } from '@expo/vector-icons';
 import React, { useState, useRef, useEffect } from "react";
 import {
   StyleSheet,
@@ -22,7 +23,11 @@ export default function App() {
   const [isVideoRecording, setIsVideoRecording] = useState(false);
   const [videoSource, setVideoSource] = useState(null);
   const cameraRef = useRef();
+  const [recording, processing]= useState(false);
+  
+  //This is the video recording snippet
 
+  // This is the end of the video recording snippet
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
@@ -50,7 +55,8 @@ export default function App() {
       try {
         const videoRecordPromise = cameraRef.current.recordAsync();
         if (videoRecordPromise) {
-          setIsVideoRecording(true);
+          setIsVideoRecording(true); 
+         <View style ={styles.recordingButton} />
           const data = await videoRecordPromise;
           const source = data.uri;
           if (source) {
@@ -72,6 +78,9 @@ export default function App() {
       cameraRef.current.stopRecording();
     }
   };
+
+//***************************************/
+//Toggles the camera from front to back
   const switchCamera = () => {
     if (isPreview) {
       return;
@@ -82,6 +91,7 @@ export default function App() {
         : Camera.Constants.Type.back
     );
   };
+  //**************************************/
   const cancelPreview = async () => {
     await cameraRef.current.resumePreview();
     setIsPreview(false);
@@ -111,7 +121,8 @@ export default function App() {
   const renderCaptureControl = () => (
     <View style={styles.control}>
       <TouchableOpacity disabled={!isCameraReady} onPress={switchCamera}>
-        <Text style={styles.text}>{"Flip"}</Text>
+        {/* <Text style={styles.text}>{"Flip"}</Text> */}
+        <Ionicons name={ Platform.OS === 'ios' ? "ios-reverse-camera" : 'md-reverse-camera'} size={40} color="white" />
       </TouchableOpacity>
       <TouchableOpacity
         activeOpacity={0.7}
@@ -120,6 +131,7 @@ export default function App() {
         onPressOut={stopVideoRecording}
         onPress={takePicture}
         style={styles.capture}
+       // style={styles.captureBorder}
       />
     </View>
   );
@@ -129,6 +141,32 @@ export default function App() {
   if (hasPermission === false) {
     return <Text style={styles.text}>No access to camera</Text>;
   }
+
+  // async startRecording() {
+  //   this.setState({ recording: true });
+  //   // default to mp4 for android as codec is not set
+  //   const { uri, codec = "mp4" } = await this.camera.recordAsync();
+  //   this.setState({ recording: false, processing: true });
+  //   const type = `video/${codec}`;
+  
+  //   const data = new FormData();
+  //   data.append("video", {
+  //     name: "mobile-video-upload",
+  //     type,
+  //     uri
+  //   });
+  
+  //   try {
+  //     await fetch(ENDPOINT, {
+  //       method: "post",
+  //       body: data
+  //     });
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  
+  //   this.setState({ processing: false });
+  // }
 
 
   return (
@@ -183,10 +221,18 @@ export default function App() {
     alignItems: 'center',
    justifyContent: 'center',
   }*/
+
+  
   const styles = StyleSheet.create({
+    //******************************************************/
+    //Styles the whole camera app??
     container: {
-      ...StyleSheet.absoluteFillObject,
+       ...StyleSheet.absoluteFillObject,
+      // flex: 1,
+
     },
+    //******************************************************/
+    //Positions close button
     closeButton: {
       position: "absolute",
       top: 35,
@@ -200,14 +246,20 @@ export default function App() {
       opacity: 0.7,
       zIndex: 2,
     },
+    //******************************************************/
+    //not too sure, but seems to display the recorded video
     media: {
       ...StyleSheet.absoluteFillObject,
     },
+    //******************************************************/
+    //Creates the x for the cancel button on top left corner
     closeCross: {
       width: "68%",
       height: 1,
       backgroundColor: "black",
     },
+    //******************************************************/
+    //Placement for recording and flip buttons
     control: {
       position: "absolute",
       flexDirection: "row",
@@ -216,14 +268,36 @@ export default function App() {
       alignItems: "center",
       justifyContent: "center",
     },
+    //******************************************************/
+    //Styling for the recording button
     capture: {
-      backgroundColor: "#f5f6f5",
-      borderRadius: 5,
-      height: captureSize,
-      width: captureSize,
-      borderRadius: Math.floor(captureSize / 2),
-      marginHorizontal: 31,
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-evenly',
+       backgroundColor: "#f5f6f5",
+       borderRadius: 5,
+       height: captureSize,
+       width: captureSize,
+       //borderWidth: 10,
+       //borderRadius:25,
+       borderRadius: Math.floor(captureSize / 2),
+      //borderRadius:25,
+       marginHorizontal: 31,
     },
+     recordingButton: {
+      justifyContent: 'space-evenly',
+       backgroundColor: 'red',
+       borderRadius: 5,
+       height: captureSize,
+       width: captureSize,
+       //borderWidth: 10,
+       //borderRadius:25,
+       borderRadius: Math.floor(captureSize / 2),
+      //borderRadius:25,
+       marginHorizontal: 31,
+     },
+    //******************************************************/
+    //Positions red dot when recording in progress
     recordIndicatorContainer: {
       flexDirection: "row",
       position: "absolute",
@@ -234,11 +308,15 @@ export default function App() {
       backgroundColor: "transparent",
       opacity: 0.7,
     },
+    //******************************************************/
+    //Displays text saying "recording" when recording in progress
     recordTitle: {
       fontSize: 14,
       color: "#ffffff",
       textAlign: "center",
     },
+    //***************************************************/
+    //Shows a red dot when recording is enabled
     recordDot: {
       borderRadius: 3,
       height: 6,
@@ -246,6 +324,7 @@ export default function App() {
       backgroundColor: "#ff0000",
       marginHorizontal: 5,
     },
+    //********************************************* */
     text: {
       color: "#fff",
     },
