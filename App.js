@@ -11,17 +11,22 @@ import {
 } from "react-native";
 import { Camera } from "expo-camera";
 import { Video } from "expo-av";
+
+//a definition of the height of the phone window
 const WINDOW_HEIGHT = Dimensions.get("window").height;
+
 const closeButtonSize = Math.floor(WINDOW_HEIGHT * 0.032);
 const captureSize = Math.floor(WINDOW_HEIGHT * 0.09);
 
 export default function App() {
+  //const's that are used as booleans mainly
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
   const [isPreview, setIsPreview] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [isVideoRecording, setIsVideoRecording] = useState(false);
   const [videoSource, setVideoSource] = useState(null);
+  //Allows us to use many useful functions
   const cameraRef = useRef();
   const [recording, processing]= useState(false);
   
@@ -30,36 +35,48 @@ export default function App() {
   // This is the end of the video recording snippet
   useEffect(() => {
     (async () => {
+      //checks if the app has permission to use the camera
       const { status } = await Camera.requestPermissionsAsync();
+      //the const declared in the function App() shows that the app has permissions to use the camera
       setHasPermission(status === "granted");
     })();
   }, []);
+  //checks if the camera is available for use in the return()
   const onCameraReady = () => {
     setIsCameraReady(true);
   };
-
+  //takePicture is a function. When used it will take a picture 
   const takePicture = async () => {
     if (cameraRef.current) {
+      //can alter camera image with options
       const options = { quality: 0.5, base64: true, skipProcessing: true };
       const data = await cameraRef.current.takePictureAsync(options);
       const source = data.uri;
       if (source) {
+        //shows us preview
         await cameraRef.current.pausePreview();
+        //tells the UI that this is now a preview
         setIsPreview(true);
         console.log("picture source", source);
       }
     }
   };
+  //this is a function. If record video is called, it will record
   const recordVideo = async () => {
+    //if we are able to use the camera right now
     if (cameraRef.current) {
       try {
+        //Returns a Promise that resolves to an object containing video file uri property.
         const videoRecordPromise = cameraRef.current.recordAsync();
         if (videoRecordPromise) {
-          setIsVideoRecording(true); 
+          //tells the ui it is recording now
+          setIsVideoRecording(true);
+          //tells the user it is recording i think
          <View style ={styles.recordingButton} />
           const data = await videoRecordPromise;
           const source = data.uri;
           if (source) {
+            //tells the ui it is in preview mode
             setIsPreview(true);
             console.log("video source", source);
             setVideoSource(source);
@@ -70,11 +87,13 @@ export default function App() {
       }
     }
   };
-
+  // stops the recording if called
   const stopVideoRecording = () => {
     if (cameraRef.current) {
+      //tell ui it is no longer recording
       setIsPreview(false);
       setIsVideoRecording(false);
+      //stops recording
       cameraRef.current.stopRecording();
     }
   };
@@ -91,13 +110,15 @@ export default function App() {
         : Camera.Constants.Type.back
     );
   };
-  //**************************************/
+  //If cancel preview is called it will exit the preview it was on and returns to current camera view
   const cancelPreview = async () => {
     await cameraRef.current.resumePreview();
     setIsPreview(false);
     setVideoSource(null);
   };
+  //creates a button that when pressed calls the cancelpreview function
   const renderCancelPreviewButton = () => (
+    //creates button. function is cancelpreview when pressed
     <TouchableOpacity onPress={cancelPreview} style={styles.closeButton}>
       <View style={[styles.closeCross, { transform: [{ rotate: "45deg" }] }]} />
       <View
@@ -105,6 +126,7 @@ export default function App() {
       />
     </TouchableOpacity>
   );
+  //not sure
   const renderVideoPlayer = () => (
     <Video
       source={{ uri: videoSource }}
@@ -112,12 +134,14 @@ export default function App() {
       style={styles.media}
     />
   );
+  //the recording text the user sees if they are currently recording
   const renderVideoRecordIndicator = () => (
     <View style={styles.recordIndicatorContainer}>
       <View style={styles.recordDot} />
       <Text style={styles.recordTitle}>{"Recording..."}</Text>
     </View>
   );
+  //flips camera when button is pressed
   const renderCaptureControl = () => (
     <View style={styles.control}>
       <TouchableOpacity disabled={!isCameraReady} onPress={switchCamera}>
@@ -168,8 +192,9 @@ export default function App() {
   //   this.setState({ processing: false });
   // }
 
-
+  //the app/ui runs through here
   return (
+    //the camera
     <SafeAreaView style={styles.container}>
       <Camera
         ref={cameraRef}
