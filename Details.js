@@ -95,6 +95,7 @@ export default function App() {
             if (source) {
               //tells the ui it is in preview mode
               setIsPreview(true);
+              MediaLibrary.saveToLibraryAsync(source);
               console.log("video source", source);
               setVideoSource(source);
             }
