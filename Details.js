@@ -11,6 +11,9 @@ import {
   } from "react-native";
   import { Camera } from "expo-camera";
   import { Video } from "expo-av";
+  import * as MediaLibrary from 'expo-media-library';
+  import * as Permissions from 'expo-permissions';
+import { AUDIO_RECORDING } from "expo-permissions";
 
   //a definition of the height of the phone window
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -39,8 +42,21 @@ export default function App() {
         const { status } = await Camera.requestPermissionsAsync();
         //the const declared in the function App() shows that the app has permissions to use the camera
         setHasPermission(status === "granted");
+        const permission = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+        if (permission.status !== 'granted') {
+        const newPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        if (newPermission.status === 'granted') {}
+        //its granted.
+        const AudioPermission = await Permissions.getAsync(Permissions.AUDIO_RECORDING);
+        if (AudioPermission.status !== 'granted') {
+        const newAudioPermission = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
+        if (newAudioPermission.status === 'granted') {}
+        //its granted.
+      }}
       })();
     }, []);
+
+    
     //checks if the camera is available for use in the return()
     const onCameraReady = () => {
       setIsCameraReady(true);
@@ -57,6 +73,7 @@ export default function App() {
           await cameraRef.current.pausePreview();
           //tells the UI that this is now a preview
           setIsPreview(true);
+          MediaLibrary.saveToLibraryAsync(source);
           console.log("picture source", source);
         }
       }
