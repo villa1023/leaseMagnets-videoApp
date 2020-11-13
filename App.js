@@ -13,7 +13,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Camera } from "expo-camera";
 import { Video } from "expo-av";
 import Details from './Details';
-
+import Edit from './Edit';
 
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const closeButtonSize = Math.floor(WINDOW_HEIGHT * 0.032);
@@ -27,6 +27,10 @@ function HomeScreen({ navigation}) {
       <Button 
       title="Record or Take a Picture"
       onPress={()=> navigation.navigate('Details')}
+      />
+      <Button
+      title="Edit Your Videos"
+      onPress={()=> navigation.navigate('Edit')}
       />
     </View>
   );
@@ -74,6 +78,14 @@ export default function App() {
         />
         
         <Stack.Screen name="Details" component={Details} options={{title: 'Snap a Picture or Record a Video', headerStyle: {
+            backgroundColor: '#f4511e',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },}} />
+
+        <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit your videos', headerStyle: {
             backgroundColor: '#f4511e',
           },
           headerTintColor: '#fff',
