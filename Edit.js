@@ -12,6 +12,7 @@ import {
   } from "react-native";
   import * as ImagePicker from 'expo-image-picker';
   import Constants from 'expo-constants';
+  import { ImageBrowser } from 'expo-image-picker-multiple';
 
   export default function ImagePickerExample() {
     
