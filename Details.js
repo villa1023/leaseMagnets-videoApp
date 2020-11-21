@@ -10,7 +10,7 @@ import {
     SafeAreaView,
   } from "react-native";
   import { Camera } from "expo-camera";
-  import { Video } from "expo-av";
+  import { Audio, Video } from "expo-av";
   import * as MediaLibrary from 'expo-media-library';
   import * as Permissions from 'expo-permissions';
 import { AUDIO_RECORDING } from "expo-permissions";
@@ -33,13 +33,15 @@ export default function App() {
     const cameraRef = useRef();
     const [recording, processing]= useState(false);
     
+    
     //This is the video recording snippet
   
     // This is the end of the video recording snippet
     useEffect(() => {
       (async () => {
         //checks if the app has permission to use the camera
-        const { status } = await Camera.requestPermissionsAsync();
+        const { status } = await Audio.requestPermissionsAsync() || Camera.requestPermissionsAsync();
+
         //the const declared in the function App() shows that the app has permissions to use the camera
         setHasPermission(status === "granted");
         const permission = await Permissions.getAsync(Permissions.CAMERA_ROLL);
