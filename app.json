@@ -27,7 +27,8 @@
         "backgroundColor": "#FFFFFF",
         "package": "com.leaseMagnets.videoEditor",
         "versionCode": 1
-      }
+      },
+      "package": "com.leaseMagnets.videoEditor"
     },
     "web": {
       "favicon": "./assets/favicon.png"
